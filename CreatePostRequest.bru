@@ -1,0 +1,60 @@
+meta {
+  name: CreatePostRequest
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  
+    mutation CreatePost($title: String!, $views: Int!, $user_id: ID!) {
+      createPost(title: $title, views: $views, user_id: $user_id) {
+        id
+        title
+        views
+        user_id
+      }
+    }
+  
+  
+  
+  
+}
+
+body:graphql:vars {
+  {
+    "title":"This is my first post",
+    "views":1,
+    "user_id":"51"
+  }
+}
+
+vars:post-response {
+  idValue: res.body.data.createPost.id
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.createPost.title: startsWith This
+}
+
+tests {
+  test("status code test", function() {
+  expect(res.getStatus()).to.equal(200);
+  });
+  test("name data type test", function() {
+  expect(res.getBody().data.createPost.title).to.be.a('string');
+  });
+  test("name value test", function() {
+  expect(res.getBody().data.createPost.views).to.equal(1);
+  });
+  test("header value test", function() {
+  expect(res.getHeader("connection")).to.equal("keep-alive");
+  });
+  
+}

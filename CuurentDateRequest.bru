@@ -1,0 +1,39 @@
+meta {
+  name: CuurentDateRequest
+  type: graphql
+  seq: 5
+}
+
+post {
+  url: http://localhost:3000/
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  mutation CreatePost($title: String!, $views: Int!, $user_id: ID!) {
+      createPost(title: $title, views: $views, user_id: $user_id) {
+        id
+        title
+        views
+        user_id
+      }
+    }
+  
+}
+
+body:graphql:vars {
+  {
+    "title":"{{dateValue}}",
+    "views":1,
+    "user_id":"51"
+  }
+}
+
+script:pre-request {
+  function getCurrentDate() {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // 
+  }
+  bru.setVar("dateValue", getCurrentDate());
+}
